@@ -103,7 +103,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       iconSize: 120,
                       color: Theme.of(context).cardColor,
                       onPressed: resetTime,
-                      icon: Icon(Icons.stop_circle_outlined),
+                      icon: Icon(Icons.settings_backup_restore_rounded),
+                    ),
+                  if (!isRunning && totalSeconds != 1500)
+                    IconButton(
+                      iconSize: 120,
+                      color: Theme.of(context).cardColor,
+                      onPressed: resetTime,
+                      icon: Icon(Icons.settings_backup_restore_rounded),
                     ),
                 ],
               ),
