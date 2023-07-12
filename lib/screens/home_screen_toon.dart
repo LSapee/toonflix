@@ -3,36 +3,15 @@ import 'package:toonflix/services/api_service.dart';
 
 import '../models/WebtoonModel.dart';
 
-class HomeScreenToon extends StatefulWidget {
-  const HomeScreenToon({super.key});
+class HomeScreenToon extends StatelessWidget {
+  HomeScreenToon({super.key});
 
-  @override
-  State<HomeScreenToon> createState() => _HomeScreenToonState();
-}
-
-class _HomeScreenToonState extends State<HomeScreenToon> {
-  List<WebtoonModel> webtoons = [];
-  bool isLoading = true;
-
-  void waitForWebToons() async {
-    webtoons = await ApiService.getTodaysToons();
-    isLoading = false;
-    setState(() {});
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    waitForWebToons();
-  }
+  Future<List<WebtoonModel>> webtoons = ApiService.getTodaysToons();
 
   @override
   Widget build(BuildContext context) {
-    print(webtoons);
-    print(isLoading);
     return Scaffold(
-      backgroundColor: Colors.blueAccent,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 3, //음영
         backgroundColor: Colors.white,
@@ -44,6 +23,19 @@ class _HomeScreenToonState extends State<HomeScreenToon> {
             fontWeight: FontWeight.w600,
           ),
         ),
+      ),
+      body: FutureBuilder(
+        future: webtoons,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return ListView(
+              children: [
+                for (var webtoon in snapshot.data!) Text(webtoon.title)
+              ],
+            );
+          }
+          return Text("Loading...");
+        },
       ),
     );
   }

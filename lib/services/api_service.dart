@@ -16,7 +16,7 @@ class ApiService {
       final webtoons = jsonDecode(response.body);
       for (var webtoon in webtoons) {
         final toon = WebtoonModel.fromJson(webtoon);
-        print(toon.title);
+        webtoonInstances.add(toon);
       }
       return webtoonInstances;
     }
