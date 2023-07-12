@@ -28,10 +28,15 @@ class HomeScreenToon extends StatelessWidget {
         future: webtoons,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return ListView(
-              children: [
-                for (var webtoon in snapshot.data!) Text(webtoon.title)
-              ],
+            return ListView.builder(
+              // 가로 스크롤 스크롤 될때마다 빌드되서 메모리 사용을 적게함
+              scrollDirection: Axis.horizontal,
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                print(index);
+                var webtoon = snapshot.data![index];
+                return Text(webtoon.title);
+              },
             );
           }
           return Text("Loading...");
