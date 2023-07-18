@@ -6,7 +6,7 @@ import '../widgets/webtoon-widget.dart';
 
 class HomeScreenToon extends StatelessWidget {
   HomeScreenToon({super.key});
-
+  String a = "adsadsa";
   Future<List<WebtoonModel>> webtoons = ApiService.getTodaysToons();
 
   @override
@@ -18,7 +18,7 @@ class HomeScreenToon extends StatelessWidget {
         backgroundColor: Colors.white,
         foregroundColor: Colors.green,
         title: const Text(
-          "Today's 툰",
+          "오늘의 웹툰",
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w600,

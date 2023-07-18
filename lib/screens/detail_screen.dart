@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toonflix/services/api_service.dart';
 
 import '../models/webtoon_detail_model.dart';
@@ -22,12 +23,45 @@ class DetailScreen extends StatefulWidget {
 class _DetailScreenState extends State<DetailScreen> {
   late Future<WebtoonDetailModel> webtoon;
   late Future<List<WebtoonEpisodeModel>> episodes;
+  late SharedPreferences prefs;
+
+  bool isLike = false;
+
+  Future initPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+    final likedToons = prefs.getStringList("likedToons");
+    if (likedToons != null) {
+      if (likedToons.contains(widget.id) == true) {
+        setState(() {
+          isLike = true;
+        });
+      }
+    } else {
+      await prefs.setStringList("likedToons", []);
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     webtoon = ApiService.getToonById(widget.id);
     episodes = ApiService.getEpisodeById(widget.id);
+    initPrefs();
+  }
+
+  onHeartTap() async {
+    final likedToons = prefs.getStringList("likedToons");
+    if (likedToons != null) {
+      if (isLike) {
+        likedToons.remove(widget.id);
+      } else {
+        likedToons.add(widget.id);
+      }
+      await prefs.setStringList("likedToons", likedToons);
+      setState(() {
+        isLike = !isLike;
+      });
+    }
   }
 
   @override
@@ -38,6 +72,13 @@ class _DetailScreenState extends State<DetailScreen> {
         elevation: 3, //음영
         backgroundColor: Colors.white,
         foregroundColor: Colors.green,
+        actions: [
+          IconButton(
+            onPressed: onHeartTap,
+            icon:
+                Icon(isLike ? Icons.favorite : Icons.favorite_outline_outlined),
+          ),
+        ],
         title: Text(
           widget.title,
           style: const TextStyle(
@@ -74,12 +115,7 @@ class _DetailScreenState extends State<DetailScreen> {
                       child: Image.network(
                         widget.thumb,
                         headers: const {
-                          "Access-Control-Allow-Origin": "*",
-                          "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-                          // "Access-Control-Allow-Headers":
-                          //     "Origin, X-Requested-With, Content-Type, Accept",
-                          "User-Agent":
-                              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36",
+                          'Referer': 'https://comic.naver.com',
                         },
                       ),
                     ),
